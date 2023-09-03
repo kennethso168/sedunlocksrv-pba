@@ -104,6 +104,9 @@ cp "${CACHEDIR}/iso-extracted/boot/vmlinuz64" "${TMPDIR}/fs/boot/vmlinuz64"
 
 mkdir -p "${TMPDIR}/core/usr/local/sbin/"
 
+wget -P "${CACHEDIR}" "https://github.com/pocopico/tinycore-redpill/raw/stable/tools/kexec"
+chmod +x "${CACHEDIR}/kexec"
+cp "${CACHEDIR}/kexec" "${TMPDIR}/core/usr/local/sbin/"
 cp "${CACHEDIR}/sedutil/${SEDUTIL_FORK}/${SEDUTILBINFILENAME}" "${TMPDIR}/core/usr/local/sbin/"
 rsync -avr --exclude='sedunlocksrv/main.go' --exclude='sedunlocksrv/go.mod' 'sedunlocksrv' "${TMPDIR}/core/usr/local/sbin/"
 cp ./tc/tc-config "${TMPDIR}/core/etc/init.d/tc-config"
