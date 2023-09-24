@@ -151,26 +151,58 @@ func getOutboundIP() net.IP {
 	return localAddr.IP
 }
 
+func menu() {
+	fmt.Printf("\nPress relevant key for action:\n")
+	fmt.Printf("1) Reboot\n")
+	fmt.Printf("2) Shutdown\n")
+	fmt.Printf("3) Open shell\n")
+	fmt.Printf("Esc) Back to password input\n")
+	var b []byte = make([]byte, 1)
+out:
+	for {
+		os.Stdin.Read(b)
+		switch bi := b[0]; bi {
+		case 27: // ESC key
+			break out
+		case 49: // 1
+			fmt.Println("Rebooting in 3 seconds")
+			time.Sleep(3 * time.Second)
+			cmdExecStdIO("./reboot.sh")
+		case 50: // 2
+			fmt.Println("Shutting down in 3 seconds")
+			time.Sleep(3 * time.Second)
+			cmdExecStdIO("./shutdown.sh")
+		case 51: // 3
+			cmd := exec.Command("ash")
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			_ = cmd.Run()
+			break out
+		}
+	}
+}
+
 func passwordInput() {
 	var b []byte = make([]byte, 1)
 	var password_buffer bytes.Buffer
 	for {
 		fmt.Printf("\nKey in SED password and press Enter anytime to unlock\n")
 		fmt.Printf("Note that keystrokes won't be echoed on the screen\n")
-		fmt.Printf("Press ESC anytime to reboot\n")
-		fmt.Printf("Press Ctrl-D anytime to shutdown\n")
+		fmt.Printf("Press Ctrl-D anytime to reboot\n")
+		fmt.Printf("Press ESC for menu\n")
 	out:
 		for {
 			os.Stdin.Read(b)
 			switch bi := b[0]; bi {
 			case 4: // CTRL-D key
-				fmt.Println("Shutting down in 3 seconds")
-				time.Sleep(3 * time.Second)
-				cmdExecStdIO("./shutdown.sh")
-			case 27: // ESC key
 				fmt.Println("Rebooting in 3 seconds")
 				time.Sleep(3 * time.Second)
 				cmdExecStdIO("./reboot.sh")
+			case 27: // ESC key
+				menu()
+				password_buffer.Reset()
+				break out
 			case 10: // ENTER key
 				fmt.Println("Password entered. Trying to unlock disk with password...")
 				cmdExecStdIO("./opal-functions.sh", password_buffer.String())
