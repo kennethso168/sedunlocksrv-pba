@@ -25,7 +25,7 @@ fi
 trap cleanup EXIT
 
 # Default config for 64-bit Linux and Sedutil
-GRUBSIZE=15 # Reserve this amount of MiB on the image for GRUB (increase this number if needed)
+GRUBSIZE=25 # Reserve this amount of MiB on the image for GRUB (increase this number if needed)
 CACHEDIR="cache"
 TCURL="http://distro.ibiblio.org/tinycorelinux/14.x/x86_64"
 INPUTISO="TinyCorePure64-current.iso"
